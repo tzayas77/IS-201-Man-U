@@ -1,0 +1,170 @@
+.header-container {
+    position: relative;
+    width: 100%;
+    height: 350px; /* Adjust the height as needed */
+    overflow: hidden;
+}
+
+.header-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center ; /* <-- THIS controls what part shows */
+    display: block;
+}
+
+.header-text {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    color: white;
+    font-size: 45px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.4); /* Optional background for readability */
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+
+.list-photo-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.centered-list {
+    max-width: 500px;
+    text-align: left;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.centered-list ol,
+.centered-list ul {
+    padding-left: 20px;
+}
+
+.team-img {
+    max-width: 450px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+}
+
+.section-title {
+    text-align: center;
+    font-size: 35px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.video-section {
+    display: flex;
+    justify-content: center;
+    margin: 40px auto;
+}
+
+
+.back-to-top {
+    text-align: center;
+    margin: 40px 0;
+    font-size: 18px;
+}
+
+.back-to-top {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.back-to-top button {
+    background-color: #d00027; /* Man Utd red */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back-to-top button:hover {
+    background-color: #000;
+}
+
+body {
+    background-color: lightgray; /* Soft light gray */
+    color: #000; /* Makes sure text is dark for good contrast */
+    font-family: Arial, sans-serif;
+}
+
+
+.home-button-container {
+    position: fixed;
+    top: 100px; /* Adjust as needed */
+    left: 30px;
+    z-index: 1000;
+}
+
+ .home-button {
+        background-color: #d00027;
+        color: white;
+        padding: 12px 24px;
+        font-size: 16px;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 999px; /* <-- makes it pill-shaped */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        display: inline-block;
+ }
+    
+
+.home-button:hover {
+    background-color: #000;
+    transform: scale(1.05);
+}
+
+.tableau-embed-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 40px auto;
+    padding: 0 220px;
+  }
+  
+  .button-bar {
+    position: fixed;
+    top: 100px;
+    left: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+  
+  .home-button,
+  .game-button {
+    background-color: #d00027; /* Man Utd red */
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 999px; /* pill shape */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-align: center;
+  }
+  
+  .home-button:hover,
+  .game-button:hover {
+    background-color: #000;
+    transform: scale(1.05);
+  }
+  

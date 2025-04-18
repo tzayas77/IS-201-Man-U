@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maze Game</title>
+  <style>
+    #homeBtn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#homeBtn:hover {
+  background: #218838;
+}
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    canvas {
+      background: #fff;
+      margin-top: 20px;
+      border: 5px solid #444;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      color: limegreen;
+      display: none;
+    }
+
+    #newGameBtn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #newGameBtn:hover {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Maze Game</h1>
+<div style="text-align: center; margin-top: 20px;">
+    <button id="homeBtn" onclick="goHome()">🏠 Go to Home Page</button>
+  </div>
+  
+<canvas id="mazeCanvas" width="500" height="500"></canvas>
+<div style="text-align: center; margin-top: 20px;"></div>
+<div id="message">
+    🎉 Congratulations! You finished the maze!<br><br>
+  </div>
+  
+<button id="newGameBtn" onclick="generateMaze()">New Game</button>
+
+<script>
+  const canvas = document.getElementById('mazeCanvas');
+  const ctx = canvas.getContext('2d');
+  const message = document.getElementById('message');
+  const size = 25;
+  const cols = canvas.width / size;
+  const rows = canvas.height / size;
+
+  let grid = [];
+  let current;
+  let stack = [];
+  let player = { x: 0, y: 0 };
+
+  class Cell {
+    constructor(i, j) {
+      this.i = i;
+      this.j = j;
+      this.walls = [true, true, true, true]; // top, right, bottom, left
+      this.visited = false;
+    }
+
+    checkNeighbors() {
+      const neighbors = [];
+
+      const top    = grid[index(this.i, this.j - 1)];
+      const right  = grid[index(this.i + 1, this.j)];
+      const bottom = grid[index(this.i, this.j + 1)];
+      const left   = grid[index(this.i - 1, this.j)];
+
+      [top, right, bottom, left].forEach(cell => {
+        if (cell && !cell.visited) neighbors.push(cell);
+      });
+
+      if (neighbors.length > 0) {
+        return neighbors[Math.floor(Math.random() * neighbors.length)];
+      } else {
+        return undefined;
+      }
+    }
+
+    show() {
+      const x = this.i * size;
+      const y = this.j * size;
+
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+
+      if (this.walls[0]) { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + size, y); ctx.stroke(); }
+      if (this.walls[1]) { ctx.beginPath(); ctx.moveTo(x + size, y); ctx.lineTo(x + size, y + size); ctx.stroke(); }
+      if (this.walls[2]) { ctx.beginPath(); ctx.moveTo(x + size, y + size); ctx.lineTo(x, y + size); ctx.stroke(); }
+      if (this.walls[3]) { ctx.beginPath(); ctx.moveTo(x, y + size); ctx.lineTo(x, y); ctx.stroke(); }
+
+      if (this.visited) {
+        ctx.fillStyle = '#eee';
+        ctx.fillRect(x, y, size, size);
+      }
+    }
+  }
+
+  function index(i, j) {
+    if (i < 0 || j < 0 || i >= cols || j >= rows) return -1;
+    return i + j * cols;
+  }
+
+  function removeWalls(a, b) {
+    const x = a.i - b.i;
+    if (x === 1) { a.walls[3] = false; b.walls[1] = false; }
+    if (x === -1) { a.walls[1] = false; b.walls[3] = false; }
+
+    const y = a.j - b.j;
+    if (y === 1) { a.walls[0] = false; b.walls[2] = false; }
+    if (y === -1) { a.walls[2] = false; b.walls[0] = false; }
+  }
+
+  function generateMaze() {
+    message.style.display = 'none';
+    grid = [];
+    stack = [];
+    player = { x: 0, y: 0 };
+
+    for (let j = 0; j < rows; j++) {
+      for (let i = 0; i < cols; i++) {
+        grid.push(new Cell(i, j));
+      }
+    }
+
+    current = grid[0];
+
+    const interval = setInterval(() => {
+      for (let i = 0; i < grid.length; i++) {
+        grid[i].show();
+      }
+
+      current.visited = true;
+
+      const next = current.checkNeighbors();
+      if (next) {
+        next.visited = true;
+        stack.push(current);
+        removeWalls(current, next);
+        current = next;
+      } else if (stack.length > 0) {
+        current = stack.pop();
+      } else {
+        clearInterval(interval);
+        drawPlayer();
+      }
+    }, 5);
+  }
+
+  function drawPlayer() {
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(player.x * size + 5, player.y * size + 5, size - 10, size - 10);
+  }
+
+  function drawMaze() {
+    for (let i = 0; i < grid.length; i++) {
+      grid[i].show();
+    }
+  }
+
+  function movePlayer(dx, dy) {
+    const newX = player.x + dx;
+    const newY = player.y + dy;
+
+    if (newX < 0 || newY < 0 || newX >= cols || newY >= rows) return;
+
+    const currentCell = grid[index(player.x, player.y)];
+    const nextCell = grid[index(newX, newY)];
+
+    if (
+      (dx === -1 && !currentCell.walls[3]) ||
+      (dx === 1 && !currentCell.walls[1]) ||
+      (dy === -1 && !currentCell.walls[0]) ||
+      (dy === 1 && !currentCell.walls[2])
+    ) {
+      player.x = newX;
+      player.y = newY;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawMaze();
+      drawPlayer();
+
+      if (player.x === cols - 1 && player.y === rows - 1) {
+        message.style.display = 'block';
+      }
+    }
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') movePlayer(0, -1);
+    if (e.key === 'ArrowDown') movePlayer(0, 1);
+    if (e.key === 'ArrowLeft') movePlayer(-1, 0);
+    if (e.key === 'ArrowRight') movePlayer(1, 0);
+  });
+
+  generateMaze();
+  function goHome() {
+  window.location.href = "index.html"; // change if your homepage is named differently
+}
+
+</script>
+
+</body>
+</html>
